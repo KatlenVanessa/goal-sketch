@@ -1,0 +1,94 @@
+body {
+  font-family: 'Poppins';
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #ffffff;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-types {
+  margin-bottom: 20px;
+}
+
+button {
+  font-family: 'Poppins';
+  font-size: 22px;
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  border-color: transparent;
+  border-radius: 5px;
+}
+
+#bg{
+  background-color: #e7be37;
+  color: white;
+}
+
+#cg{
+  background-color: #3498db;
+  color: white;
+}
+
+.board {
+  width: 600px;
+  height: 400px;
+  background-color: #fff;
+  border: 5px solid #ccc;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 5px;
+  
+}
+
+.card {
+  width: 130px;
+  height: 100px;
+  margin: 10px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  color: white;
+  transition: height 0.2s ease;  /* Transição suave ao redimensionar */
+  flex-direction: column;  /* Para que o botão e o texto fiquem empilhados */
+}
+
+.card1 {
+  background-color: #e7be37;
+}
+
+.card2 {
+  background-color: #3498db;
+}
+
+.card textarea {
+  width: 80%;
+  border: transparent;
+  background: transparent;
+  color: white;
+  text-align: left;
+  font-size: 14px;
+  resize: none; /* Desativa o redimensionamento manual */
+  overflow: hidden; /* Impede a barra de rolagem */
+  box-sizing: border-box; /* Para padding não influenciar no tamanho */
+}
+
+textarea:focus, input:focus, select:focus {
+  box-shadow: 0 0 0 0;
+  border: 0 none;
+  outline: 0;
+} 
+
