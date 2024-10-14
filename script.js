@@ -1,4 +1,6 @@
-let draggedElement;
+let draggedElement = null;
+let offsetX = 0;
+let offsetY = 0;
 
 function createCard(type) {
   const card = document.createElement('div');
@@ -21,11 +23,14 @@ function createCard(type) {
   card.addEventListener('dragstart', dragStart);
   card.addEventListener('dragend', dragEnd);
 
-  document.body.appendChild(card);
+  // Adicionar o card ao container (um ao lado do outro)
+  document.getElementById('card-container').appendChild(card);
 }
 
 function dragStart(e) {
   draggedElement = this;
+  offsetX = e.clientX - this.getBoundingClientRect().left; // Cálculo da posição do mouse em relação ao card
+  offsetY = e.clientY - this.getBoundingClientRect().top;
   setTimeout(() => this.style.display = 'none', 0);
 }
 
@@ -52,12 +57,26 @@ board.addEventListener('dragover', function (e) {
   e.preventDefault();
 });
 
-board.addEventListener('drop', function () {
+board.addEventListener('drop', function (e) {
+  e.preventDefault();
   if (draggedElement) {
-    board.appendChild(draggedElement);
+    // Obter a posição do mouse ao soltar o card
+    const mouseX = e.clientX - board.offsetLeft - offsetX;
+    const mouseY = e.clientY - board.offsetTop - offsetY;
+
+    // Calcular as dimensões do card
+    const cardWidth = draggedElement.offsetWidth;
+    const cardHeight = draggedElement.offsetHeight;
+
+    // Limitar a posição do card para dentro do board
+    const newLeft = Math.max(0, Math.min(mouseX, board.clientWidth - cardWidth));
+    const newTop = Math.max(0, Math.min(mouseY, board.clientHeight - cardHeight));
+
+    // Ajustar a posição do card ao ser solto
     draggedElement.style.position = 'absolute';
-    draggedElement.style.left = `${event.clientX - board.offsetLeft}px`;
-    draggedElement.style.top = `${event.clientY - board.offsetTop}px`;
+    draggedElement.style.left = `${newLeft}px`;
+    draggedElement.style.top = `${newTop}px`;
+
+    board.appendChild(draggedElement); // Mover o card para o board
   }
 });
-

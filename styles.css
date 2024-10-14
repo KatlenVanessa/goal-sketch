@@ -13,15 +13,16 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 90%; /* Define largura máxima de 90% da tela */
+  max-width: 1200px; /* Define uma largura máxima fixa */
 }
 
 .card-types {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 button {
   font-family: 'Poppins';
-  font-size: 22px;
   padding: 10px;
   margin: 5px;
   font-size: 16px;
@@ -41,19 +42,19 @@ button {
 }
 
 .board {
-  width: 600px;
-  height: 400px;
+  width: 90%; /* O quadro ocupará toda a largura disponível */
+  height: 60vh; /* Altura de 60% da viewport para ser responsivo */
   background-color: #fff;
   border: 5px solid #ccc;
   position: relative;
   display: flex;
   flex-wrap: wrap;
   border-radius: 5px;
-  
+  /* overflow: hidden; Limita a área visível dentro do quadro */
 }
 
 .card {
-  width: 130px;
+  width: 160px;
   height: 100px;
   margin: 10px;
   border-radius: 3px;
@@ -64,6 +65,7 @@ button {
   color: white;
   transition: height 0.2s ease;  /* Transição suave ao redimensionar */
   flex-direction: column;  /* Para que o botão e o texto fiquem empilhados */
+  position: relative;
 }
 
 .card1 {
@@ -75,7 +77,7 @@ button {
 }
 
 .card textarea {
-  width: 80%;
+  width: 75%;
   border: transparent;
   background: transparent;
   color: white;
@@ -92,3 +94,10 @@ textarea:focus, input:focus, select:focus {
   outline: 0;
 } 
 
+#card-container {
+  display: flex;
+  flex-direction: row;  /* Dispor os cards horizontalmente */
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
