@@ -1,91 +1,57 @@
 body {
-  font-family: 'Poppins';
-  font-size: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  background-color: #ffffff;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 90%; /* Define largura máxima de 90% da tela */
-  max-width: 1200px; /* Define uma largura máxima fixa */
-}
-
-.card-types {
-  margin-bottom: 10px;
-}
-
-button {
-  font-family: 'Poppins';
-  padding: 10px;
-  margin: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  border-color: transparent;
-  border-radius: 5px;
-}
-
-#bg{
-  background-color: #e7be37;
-  color: white;
-}
-
-#cg{
-  background-color: #3498db;
-  color: white;
+  background-color: #f8f9fa;
 }
 
 .board {
-  width: 90%; /* O quadro ocupará toda a largura disponível */
-  height: 60vh; /* Altura de 60% da viewport para ser responsivo */
-  background-color: #fff;
-  border: 5px solid #ccc;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  border-radius: 5px;
-  /* overflow: hidden; Limita a área visível dentro do quadro */
+}
+
+.card-container {
+  height: 150px;
+  width: 100%;
+  border: 2px dashed #6c757d;
+  padding: 10px;
+  align-items: center;
+  background-color: #fff;
 }
 
 .card {
-  width: 160px;
-  height: 100px;
-  margin: 10px;
-  border-radius: 3px;
+  width: 150px;
+  min-height: 100px;
+  margin-right: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: grab;
   color: white;
-  transition: height 0.2s ease;  /* Transição suave ao redimensionar */
-  flex-direction: column;  /* Para que o botão e o texto fiquem empilhados */
   position: relative;
+  background-color: #b4bcc2;
+  transition: height 0.2s ease;
 }
 
 .card1 {
-  background-color: #e7be37;
-}
-
-.card2 {
   background-color: #3498db;
 }
 
+.card2 {
+  background-color: #e7be37;
+}
+
 .card textarea {
-  width: 75%;
-  border: transparent;
-  background: transparent;
+  width: 90%;
+  height: 90%;
+  border: none;
+  background: red;
   color: white;
-  text-align: left;
   font-size: 14px;
-  resize: none; /* Desativa o redimensionamento manual */
-  overflow: hidden; /* Impede a barra de rolagem */
-  box-sizing: border-box; /* Para padding não influenciar no tamanho */
+  resize: none;
+  overflow: hidden;
+  text-align: center;
+  box-sizing: border-box;
+  margin: 25px 0 0 0 ;
 }
 
 textarea:focus, input:focus, select:focus {
@@ -94,10 +60,19 @@ textarea:focus, input:focus, select:focus {
   outline: 0;
 } 
 
-#card-container {
-  display: flex;
-  flex-direction: row;  /* Dispor os cards horizontalmente */
-  justify-content: center;
-  width: 100%;
-  margin-top: 20px;
+/* Botão de exclusão */
+.delete-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  background: transparent;
+}
+
+.card.on-board .delete-btn {
+  display: block;
 }

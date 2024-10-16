@@ -4,27 +4,36 @@ let offsetY = 0;
 
 function createCard(type) {
   const card = document.createElement('div');
-  card.classList.add('card', type);
+  card.classList.add('card', type, 'rounded', 'shadow-sm');
   card.setAttribute('draggable', true);
 
   // Adicionar textarea para inserir texto
   const textarea = document.createElement('textarea');
-  textarea.placeholder = type === 'card1' ? 'Edit Card 1' : 'Edit Card 2';
+  textarea.placeholder = type === 'card1' ? 'Constraint Goal' : 'Business Goal';
 
   // Função para ajustar o tamanho do textarea e do card automaticamente
   textarea.addEventListener('input', function () {
     autoResize(textarea, card);
   });
 
-  // Adicionar o textarea ao card
+  // Adicionar botão de deletar ao card
+  const deleteButton = document.createElement('button');
+  deleteButton.classList.add('delete-btn');
+  deleteButton.innerHTML = '<img src="assets/img/x.png" width="20px">'
+  deleteButton.addEventListener('click', function () {
+    deleteCard(card);
+  });
+
+  // Adicionar o textarea e o botão de exclusão ao card
   card.appendChild(textarea);
-  
-  // Add drag event listeners
+  card.appendChild(deleteButton);
+
+  // Adicionar eventos de arrastar
   card.addEventListener('dragstart', dragStart);
   card.addEventListener('dragend', dragEnd);
 
-  // Adicionar o card ao container (um ao lado do outro)
-  document.getElementById('card-container').appendChild(card);
+  // Adicionar o card ao container de espera
+  document.querySelector('.card-container').appendChild(card);
 }
 
 function dragStart(e) {
@@ -77,6 +86,17 @@ board.addEventListener('drop', function (e) {
     draggedElement.style.left = `${newLeft}px`;
     draggedElement.style.top = `${newTop}px`;
 
-    board.appendChild(draggedElement); // Mover o card para o board
+    // Adicionar classe 'on-board' para exibir o botão de deletar
+    draggedElement.classList.add('on-board');
+
+    // Mover o card para o board
+    board.appendChild(draggedElement); 
   }
 });
+
+// Função para deletar um card
+function deleteCard(card) {
+  if (card.parentNode) {
+    card.parentNode.removeChild(card);
+  }
+}
