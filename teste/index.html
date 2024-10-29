@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Board Dinâmico com Cards Arrastáveis e Animações</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0f0f5, #e9ecef);
+      font-family: "Poppins";
+    }
+    .board-container {
+      display: flex;
+    }
+    .sidebar {
+      width: 250px;
+      padding: 1rem;
+      background-color: #f0f0f5;
+      border-right: 1px solid #ddd;
+      border-radius: 10px;
+
+        justify-content: center; /* Alinha verticalmente ao centro */
+        align-items: center; /* Alinha horizontalmente ao centro */
+        text-align: center; /* Centraliza o texto */
+    }
+    .board {
+      display: flex;
+      gap: 1rem;
+      flex-grow: 1;
+      padding: 1rem;
+    }
+    .board-column {
+      flex: 1;
+      background-color: #f8f9fa;
+      padding: 1rem;
+      border-radius: 10px;
+      min-height: 400px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
+        justify-content: center; /* Alinha verticalmente ao centro */
+        align-items: center; /* Alinha horizontalmente ao centro */
+        text-align: center; /* Centraliza o texto */
+    }
+    .board-column.highlight {
+      background-color: #e2e6ea;
+    }
+    .card {
+      cursor: grab;
+      transition: transform 0.2s ease, opacity 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      position: relative;
+      background-color: #fff;
+    }
+    .card.task-card {
+      background-color: #ffe9a1;
+    }
+    .card.bug-card {
+      background-color: #a2b9ff;
+    }
+    .card .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      border: none;
+      background: transparent;
+      font-size: 1.5rem;
+      color: #dc3545;
+      cursor: pointer;
+    }
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.375rem;
+        font-size: 1rem;
+        color: #ffffff;
+        background-color: #a7a7a7; /* Verde suave */
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
+    /* Animação de entrada */
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    /* Animação ao arrastar */
+    .card.dragging {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
+
+    .custom-textarea {
+        height: 150px; /* Altura personalizada */
+        resize: none; /* Impede o redimensionamento */
+        border: none;
+        border-radius: 5px; /* Bordas arredondadas */
+        padding: 10px; /* Espaçamento interno */
+        font-size: 16px; /* Tamanho da fonte */
+        transition: background-color 0.1s; /* Transição suave para a mudança de cor */
+        background-color: transparent;
+    }
+    .custom-textarea:focus, input:focus, select:focus {
+        box-shadow: 0 0 0 0;
+        border: 0 none;
+        outline: 0;
+    } 
+
+  </style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Goal Sketch</h2>
+  <div class="board-container">
+    
+    <!-- Sidebar para criação de cards -->
+    <div class="sidebar">
+      <h4>Adicionar Card</h4>
+      <button class="btn btn-secondary mb-3" onclick="createCard('task')">Business Goal</button>
+      <button class="btn btn-secondary mb-3" onclick="createCard('bug')">Constraint Goal</button>
+      <h5 class="mt-4">Arraste o card para o board</h5>
+      <div id="cardContainer"></div>
+    </div>
+
+    <!-- Board principal -->
+    <div class="board">
+      <div class="board-column" id="todo">
+        <h4>Business Goals</h4>
+      </div>
+      <div class="board-column" id="in-progress">
+        <h4>Constraint Goals</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.10.2/Sortable.min.js"></script>
+<script>
+  // Função para criar cards na área lateral com animação de entrada
+  function createCard(type) {
+    const cardContainer = document.getElementById('cardContainer');
+    const card = document.createElement('div');
+    card.classList.add('card', 'mt-2', 'p-2', type === 'task' ? 'task-card' : 'bug-card');
+    card.draggable = true;
+    
+    // Botão de exclusão
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('delete-btn');
+    deleteBtn.innerHTML = '&times;';
+    deleteBtn.onclick = function() {
+      card.remove();
+    };
+
+    // Conteúdo do card com opção de preencher texto
+    const cardContent = document.createElement('div');
+    cardContent.classList.add('card-body');
+    cardContent.innerHTML = `
+      <textarea class="form-control mt-2 custom-textarea" placeholder="Descreva o Goal"></textarea>
+    `;
+
+    card.appendChild(deleteBtn);
+    card.appendChild(cardContent);
+    
+    cardContainer.appendChild(card);
+  }
+
+  // Inicializa a funcionalidade de arrastar e soltar para o contêiner de cards e as colunas
+  function initializeDragAndDrop() {
+    // Inicializa a área de criação de cards
+    new Sortable(document.getElementById('cardContainer'), {
+      group: 'shared',
+      animation: 150,
+      onStart: function (evt) {
+        evt.item.classList.add('dragging');
+      },
+      onEnd: function (evt) {
+        evt.item.classList.remove('dragging');
+      }
+    });
+
+    // Inicializa as colunas do board com funcionalidade de arrastar e soltar
+    document.querySelectorAll('.board-column').forEach(column => {
+      new Sortable(column, {
+        group: 'shared',
+        animation: 150,
+        onStart: function (evt) {
+          column.classList.add('highlight');
+          evt.item.classList.add('dragging');
+        },
+        onEnd: function (evt) {
+          column.classList.remove('highlight');
+          evt.item.classList.remove('dragging');
+        }
+      });
+    });
+  }
+
+  // Executa a função ao carregar a página
+  initializeDragAndDrop();
+</script>
+
+</body>
+</html>
