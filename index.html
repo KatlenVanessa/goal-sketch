@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Board Dinâmico com Cards Arrastáveis</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0f0f5, #e9ecef);
+      font-family: "Poppins";
+    }
+    .board-container {
+      display: flex;
+    }
+    .sidebar {
+      width: 250px;
+      padding: 1rem;
+      background-color: #f0f0f5;
+      border-right: 1px solid #ddd;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .board {
+      display: flex;
+      gap: 1rem;
+      flex-grow: 1;
+      padding: 1rem;
+    }
+    .board-column {
+      flex: 1;
+      background-color: #f8f9fa;
+      padding: 1rem;
+      border-radius: 10px;
+      min-height: 400px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .board-column.highlight {
+      background-color: #e2e6ea;
+    }
+    .card {
+      cursor: grab;
+      transition: transform 0.2s ease, opacity 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      position: relative;
+      background-color: #fff;
+    }
+    .card .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      border: none;
+      background: transparent;
+      font-size: 1.5rem;
+      color: #dc3545;
+      cursor: pointer;
+    }
+    .card .edit-btn {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      border: none;
+      background: transparent;
+      font-size: 1.2rem;
+      color: #007bff;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Goal Sketch</h2>
+  <div class="board-container">
+    <div class="sidebar">
+      <h4>Adicionar Card</h4>
+      <button class="btn btn-secondary mb-3" onclick="createManualCard('Funcional')">Funcional</button>
+      <button class="btn btn-secondary mb-3" onclick="createManualCard('Não Funcional')">Não Funcional</button>
+    </div>
+
+    <div class="board">
+      <div class="board-column" id="funcionais">
+        <h4>Funcionais</h4>
+      </div>
+      <div class="board-column" id="nao-funcionais">
+        <h4>Não Funcionais</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Função para buscar os requisitos do backend
+  async function fetchRequirements() {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/requisitos/");
+      if (!response.ok) throw new Error("Erro ao carregar requisitos.");
+
+      const requisitos = await response.json();
+
+      requisitos.forEach(req => {
+        const column = req.tipo === "Funcional" ? "funcionais" : "nao-funcionais";
+        addCardToColumn(req.descricao, column);
+      });
+    } catch (error) {
+      console.error("Erro ao buscar requisitos:", error);
+      alert("Erro ao carregar requisitos do servidor.");
+    }
+  }
+
+  // Função para adicionar um card a uma coluna
+  function addCardToColumn(descricao, columnId) {
+    const column = document.getElementById(columnId);
+    const card = document.createElement("div");
+    card.classList.add("card", "mt-2", "p-2");
+
+    // Botões de ação
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.innerHTML = "&times;";
+    deleteBtn.onclick = () => card.remove();
+
+    const editBtn = document.createElement("button");
+    editBtn.classList.add("edit-btn");
+    editBtn.innerHTML = "✎";
+    editBtn.onclick = () => {
+      const newDescription = prompt("Edite o conteúdo do card:", descricao);
+      if (newDescription) cardContent.textContent = newDescription;
+    };
+
+    // Conteúdo do card
+    const cardContent = document.createElement("p");
+    cardContent.textContent = descricao;
+
+    card.appendChild(editBtn);
+    card.appendChild(deleteBtn);
+    card.appendChild(cardContent);
+    column.appendChild(card);
+  }
+
+  // Função para criar um card manualmente
+  function createManualCard(tipo) {
+    const descricao = prompt(`Digite a descrição do requisito ${tipo.toLowerCase()}:`);
+    if (descricao) {
+      const columnId = tipo === "Funcional" ? "funcionais" : "nao-funcionais";
+      addCardToColumn(descricao, columnId);
+    }
+  }
+
+  // Carrega os requisitos ao iniciar
+  fetchRequirements();
+</script>
+
+</body>
+</html>
